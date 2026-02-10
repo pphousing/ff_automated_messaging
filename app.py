@@ -144,7 +144,7 @@ def send_messages():
 
         txt += (
             f"This claim is for {adults} adults, {kids} kids, and {pets} pets "
-            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start."
+            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start. Target start date is typically within 5-10 days "
         )
 
         resp = send_text(phone, txt, first_name)
