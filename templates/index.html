@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notice to Vacate or Extension Request Messaging Tool</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        table.table th {
+            text-align: left;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container my-4">
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <img src="{{ url_for('static', filename='pp_logo.png') }}" alt="Logo" style="height: 120px;">
+        <h2 class="m-0">Furnished Finder Cold Outreach Messaging Tool</h2>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <h4>Send Messages</h4>
+            <form method="POST" action="/send_messages">
+            <input type="hidden" name="filters" value="{{ filters }}">
+
+            <div class="table-responsive mb-3">
+                <table class="table table-bordered align-middle">
+                <thead class="table-light">
+                    <tr>
+                    <th style="min-width: 240px;">FF Link</th>
+                    <th style="min-width: 180px;">LL Name</th>
+                    <th style="min-width: 180px;">LL Phone Number</th>
+                    <th style="min-width: 160px;">City</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in range(20) %}
+                    <tr>
+                    <td>
+                        <input type="text" name="ff_links[]" class="form-control" placeholder="https://...">
+                    </td>
+                    <td>
+                        <input type="text" name="ll_names[]" class="form-control" placeholder="Landlord name">
+                    </td>
+                    <td>
+                        <input type="text" name="ll_pns[]" class="form-control" placeholder="(555) 555-5555">
+                    </td>
+                    <td>
+                        <input type="text" name="cities[]" class="form-control" placeholder="City, ST">
+                    </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                <div class="form-text">
+                Fill out at least one row. You can leave the rest blank.
+                </div>
+            </div>
+
+            <!-- Keep your existing fields exactly as-is -->
+            <div class="mb-3">
+                <label class="form-label">Number of Adults:</label>
+                <input type="number" name="adults" min="0" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Number of Kids:</label>
+                <input type="number" name="kids" min="0" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Length of Stay (in months):</label>
+                <input type="number" name="stay_length" min="1" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Number of Pets:</label>
+                <input type="number" name="pets" min="0" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Number of Dogs:</label>
+                <input type="number" name="dogs" min="0" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Number of Cats:</label>
+                <input type="number" name="cats" min="0" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Any Other Information</label>
+                <input type="text" name="info" class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Your First Name</label>
+                <input type="text" name="first_name" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-success">Click to Send Texts</button>
+            </form>
+        </div>
+        {% if results_html %}
+        <hr>
+        <h5>Delivery Results</h5>
+        <div class="table-responsive">
+        {{ results_html | safe }}
+        </div>
+        {% endif %}
+</div>
+</body>
+</html>
