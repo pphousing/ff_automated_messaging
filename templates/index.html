@@ -36,7 +36,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in range(20) %}
+                    {% for i in range(30) %}
                     <tr>
                     <td>
                         <input type="text" name="ff_links[]" class="form-control" placeholder="https://...">
@@ -98,6 +98,10 @@
             <div class="mb-3">
                 <label class="form-label">Your First Name</label>
                 <input type="text" name="first_name" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label for="info">Lead ID</label>
+                <input type="number" name="lead_id" class="form-control" required>
             </div>
 
             <button type="submit" class="btn btn-success">Click to Send Texts</button>
