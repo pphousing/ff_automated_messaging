@@ -100,8 +100,19 @@ def send_messages():
     pets   = int(request.form['pets'])
     dogs   = int(request.form['dogs'])
     cats   = int(request.form['cats'])
+    lead_id =  int(request.form['lead_id'])
     info   = str(request.form.get('info', '')).strip()
     first_name = str(request.form['first_name']).strip()
+    if first_name.lower() =='charlie':
+        initials = 'CT'
+    elif first_name.lower() == 'ahmed':
+        initials = 'AS'
+    elif first_name.lower() == 'mahmoud':
+        initials = 'MY'
+    elif first_name.lower() == 'mohamed':
+        initials = 'MN'
+    elif first_name.lower() == 'eissa':
+        initials = 'ME'
 
     # Combine rows and keep only rows with at least one meaningful field
     rows = []
@@ -151,7 +162,7 @@ def send_messages():
 
         txt += (
             f"This claim is for {adults} adults, {kids} kids, and {pets} pets "
-            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start. Target start date is typically within 5-10 days "
+            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start. Target start date is typically within 5-10 days. #{initials}{lead_id}"
         )
 
         resp = send_text(phone, txt, first_name)
