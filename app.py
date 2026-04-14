@@ -67,6 +67,13 @@ def send_text(phone_num, message, first_name):
         "to":[phone_num],
         "userId":'US2ADkcfr0'
     }
+    elif first_name == 'Sara':
+        payload = {
+        "content": message,
+        "from":  'PN9mu12wlD',
+        "to":[phone_num],
+        "userId":'USPE5q7t2R'
+    }
     response = requests.post(url,headers=headers, json = payload)
     return response
 
@@ -113,6 +120,8 @@ def send_messages():
         initials = 'MN'
     elif first_name.lower() == 'eissa':
         initials = 'ME'
+    elif first_name.lower() == 'sara':
+        initials = 'SA'
 
     # Combine rows and keep only rows with at least one meaningful field
     rows = []
