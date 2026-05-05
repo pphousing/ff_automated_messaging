@@ -23,7 +23,24 @@ print("GOOGLE_MAPS_API_KEY:", os.environ.get("GOOGLE_MAPS_API_KEY"))
 app = Flask(__name__)
 app.secret_key = os.environ.get('FLASK_SECRET_KEY')  # <-- Add this line
 
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive',
+         'https://www.googleapis.com/auth/gmail.send']
+gmaps = googlemaps.Client(key=os.environ.get("GOOGLE_MAPS_API_KEY"))
 
+def authenticate_google():
+    creds = None
+    if os.path.exists('token.json'):
+        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            from google_auth_oauthlib.flow import InstalledAppFlow
+            flow = InstalledAppFlow.from_client_secrets_file('client_secret.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        with open('token.json', 'w') as token:
+            token.write(creds.to_json())
+    return creds
 
 def send_text(phone_num, message, first_name):
     url = "https://api.openphone.com/v1/messages"
@@ -138,6 +155,13 @@ def send_messages():
         )
 
     results = []
+    creds = authenticate_google()
+    client = gspread.authorize(creds)
+    sheet = client.open('Reverse Arbitrage Leads')
+    worksheet = sheet.worksheet("Messaging Tracker")
+
+    # Get next empty row once before the loop
+    next_row = len(worksheet.get_all_values()) + 1
 
     for r in rows:
         # Optional: enforce minimum required fields for sending
@@ -150,7 +174,7 @@ def send_messages():
             continue
 
         phone = extract_10_digit_number(r["pn"])
-        if not phone or len(phone) != 12:  # "+1" + 10 digits
+        if not phone or len(phone) != 12:
             results.append({
                 "channel": "OpenPhone SMS",
                 "recipient": f'{r["name"]} ({r["pn"]})',
@@ -161,8 +185,8 @@ def send_messages():
         txt = (
             f"Hi {r['name']}! My name is {first_name} and I saw your "
             f"{r['city']} Furnished Finder listing ({r['link']}) and was wondering if it "
-            f"was still available? I’m with Paradise Point Housing "
-            f"(https://www.paradisepointhousing.com), and I’m working with an "
+            f"was still available? I'm with Paradise Point Housing "
+            f"(https://www.paradisepointhousing.com), and I'm working with an "
             f"insurance company to help place a displaced family in your area.\n\n"
         )
 
@@ -171,10 +195,22 @@ def send_messages():
 
         txt += (
             f"This claim is for {adults} adults, {kids} kids, and {pets} pets "
-            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start. Target start date is typically within 5-10 days. #{initials}{lead_id}. Reply STOP to unsubscribe."
+            f"({dogs} dogs and {cats} cats) looking for a {los}-month stay to start. "
+            f"Target start date is typically within 5-10 days. #{initials}{lead_id}. "
+            f"Reply STOP to unsubscribe."
         )
 
         resp = send_text(phone, txt, first_name)
+
+        # Write to Messaging Tracker sheet
+        worksheet.update(f'A{next_row}:E{next_row}', [[
+            lead_id,       # Lead ID
+            first_name,    # PPH Specialist Name
+            r['link'],     # Furnished Finder Link
+            r['name'],     # Landlord Name
+            phone          # Phone Number
+        ]])
+        next_row += 1
 
         results.append({
             "channel": "OpenPhone SMS",
