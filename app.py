@@ -77,12 +77,12 @@ def send_text(phone_num, message, first_name):
         "to":[phone_num],
         "userId":'USkdRcH9dR'
     }
-    elif first_name == 'Omar':
+    elif first_name == 'Raul':
         payload = {
         "content": message,
         "from":  'PNGxRJ7ziq',
         "to":[phone_num],
-        "userId":'USkzTra3Ya'
+        "userId":'USuWv0mT0e'
     }
     elif first_name == 'Sara':
         payload = {
@@ -135,8 +135,8 @@ def send_messages():
         initials = 'YS'
     elif first_name.lower() == 'mohamed':
         initials = 'MN'
-    elif first_name.lower() == 'omar':
-        initials = 'OS'
+    elif first_name.lower() == 'raul':
+        initials = 'RL'
     elif first_name.lower() == 'sara':
         initials = 'SA'
 
