@@ -6,6 +6,8 @@ import gspread
 from google.auth.transport.requests import Request
 import googlemaps
 from dotenv import load_dotenv
+import time
+import random
 from googleapiclient.discovery import build
 import base64
 from email.mime.text import MIMEText
@@ -201,6 +203,9 @@ def send_messages():
         )
 
         resp = send_text(phone, txt, first_name)
+        pause = random.randint(25, 45)
+        print(f'Pausing {pause}s before next text...')
+        time.sleep(pause)
 
         # Write to Messaging Tracker sheet
         worksheet.update(f'A{next_row}:E{next_row}', [[
